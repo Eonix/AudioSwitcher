@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
@@ -25,7 +24,6 @@ namespace AudioSwitcher
         {
             contextMenuStrip = new ContextMenuStrip();
             SetAudioDeviceMenuItems();
-            //contextMenuStrip.Opening += ContextMenuStripOnOpening;
 
             icon = new NotifyIcon
             {
@@ -38,6 +36,12 @@ namespace AudioSwitcher
             icon.DoubleClick += IconOnDoubleClick;
 
             base.OnStartup(e);
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            icon.Dispose();
+            base.OnExit(e);
         }
 
         private void SetAudioDeviceMenuItems()
