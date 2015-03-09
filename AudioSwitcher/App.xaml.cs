@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
+using AudioSwitcher.Models;
 using AudioSwitcher.Services;
 
 namespace AudioSwitcher
@@ -14,12 +15,13 @@ namespace AudioSwitcher
         private NotifyIcon icon;
         private ContextMenuStrip contextMenuStrip;
         private readonly AudioDeviceManger deviceEnumerator;
+        private const string AppName = "Audio Switcher";
 
         public App()
         {
             deviceEnumerator = new AudioDeviceManger();
         }
-
+        
         protected override void OnStartup(StartupEventArgs e)
         {
             contextMenuStrip = new ContextMenuStrip();
@@ -29,7 +31,7 @@ namespace AudioSwitcher
             {
                 Visible = true,
                 Icon = AudioSwitcher.Properties.Resources.icon,
-                Text = "Audio Switcher",
+                Text = AppName,
                 ContextMenuStrip = contextMenuStrip
             };
 
@@ -74,12 +76,17 @@ namespace AudioSwitcher
                     Text = device.Name,
                     Image = device.Icon
                 };
-                item.Click += (sender, args) => deviceEnumerator.SetDefaultDevice(device.Id);
-                item.Click += (sender, args) => SetAudioDeviceMenuItems();
+                item.Click += (sender, args) => SetDefaultAudioDevice(device);
                 items[i] = item;
             }
 
             return items;
+        }
+
+        private void SetDefaultAudioDevice(AudioDevice device)
+        {
+            deviceEnumerator.SetDefaultDevice(device.Id);
+            SetAudioDeviceMenuItems();
         }
 
         private void IconOnDoubleClick(object sender, EventArgs eventArgs)
@@ -99,7 +106,7 @@ namespace AudioSwitcher
 
             deviceEnumerator.SetDefaultDevice(devices[index].Id);
 
-            icon.ShowBalloonTip((int)TimeSpan.FromSeconds(5).TotalMilliseconds, "Audio Device Switched", devices[index].Name, ToolTipIcon.Info);
+            icon.ShowBalloonTip(5000, "Audio Device Switched", devices[index].Name, ToolTipIcon.Info);
         }
     }
 }
