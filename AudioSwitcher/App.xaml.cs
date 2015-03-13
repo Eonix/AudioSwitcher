@@ -104,7 +104,7 @@ namespace AudioSwitcher
             if (index == devices.Count)
                 index = 0;
 
-            deviceEnumerator.SetDefaultDevice(devices[index].Id);
+            SetDefaultAudioDevice(devices[index]);
 
             icon.ShowBalloonTip(5000, "Audio Device Switched", devices[index].Name, ToolTipIcon.Info);
         }
