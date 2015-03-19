@@ -65,7 +65,7 @@ namespace AudioSwitcher.Services.Wrappers
 
                 var hIconEx = new IntPtr[1];
                 Shell32.ExtractIconEx(paths[0], int.Parse(paths[1]), hIconEx, null, 1);
-                return Icon.FromHandle(hIconEx[0]);
+                return new Icon(Icon.FromHandle(hIconEx[0]), 16, 16);
             }
         }
     }

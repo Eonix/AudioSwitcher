@@ -86,6 +86,7 @@ namespace AudioSwitcher
         private void SetDefaultAudioDevice(AudioDevice device)
         {
             deviceEnumerator.SetDefaultDevice(device.Id);
+            ShowToolTip(device.Name);
             SetAudioDeviceMenuItems();
         }
 
@@ -105,8 +106,12 @@ namespace AudioSwitcher
                 index = 0;
 
             SetDefaultAudioDevice(devices[index]);
+            ShowToolTip(devices[index].Name);
+        }
 
-            icon.ShowBalloonTip(5000, "Audio Device Switched", devices[index].Name, ToolTipIcon.Info);
+        private void ShowToolTip(string deviceName)
+        {
+            icon.ShowBalloonTip(5000, "Audio Device Switched", deviceName, ToolTipIcon.Info);
         }
     }
 }
