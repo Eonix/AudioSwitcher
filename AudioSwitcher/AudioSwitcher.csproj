@@ -28,6 +28,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <NuGetPackageImportStamp>6f96a2f9</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -49,6 +50,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -86,101 +89,18 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\AudioDevice.cs" />
-    <Compile Include="Services\Shell32.cs" />
+    <Compile Include="Services\NativeMethods.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CoreAudioApi\MMDeviceEnumerator.cs" />
-    <Compile Include="Policy\PolicyConfig.cs" />
-    <Compile Include="Services\Wrappers\PropertyStoreValueData.cs" />
-    <Compile Include="Services\Wrappers\PropertyStoreValue.cs" />
-    <Compile Include="Services\Wrappers\PropertyStoreKey.cs" />
-    <Compile Include="Services\Wrappers\PropertyStore.cs" />
-    <Compile Include="Services\Wrappers\Device.cs" />
-    <Compile Include="Services\Wrappers\DeviceCollection.cs" />
-    <Compile Include="Services\Wrappers\DeviceEnumerator.cs" />
-    <Compile Include="Services\Wrappers\PolicyConfiguration.cs" />
+    <Compile Include="Wrappers\PropertyStoreValueData.cs" />
+    <Compile Include="Wrappers\PropertyStoreValue.cs" />
+    <Compile Include="Wrappers\PropertyStoreKey.cs" />
+    <Compile Include="Wrappers\PropertyStore.cs" />
+    <Compile Include="Wrappers\Device.cs" />
+    <Compile Include="Wrappers\DeviceCollection.cs" />
+    <Compile Include="Wrappers\DeviceEnumerator.cs" />
+    <Compile Include="Wrappers\PolicyConfiguration.cs" />
     <Compile Include="Services\AudioDeviceManger.cs" />
-    <Compile Include="CoreAudioApi\Constants\AUDCLNT_SESSIONFLAGS_XXX.cs" />
-    <Compile Include="CoreAudioApi\Constants\AUDCLNT_STREAMFLAGS_XXX.cs" />
-    <Compile Include="CoreAudioApi\Constants\ComCLSIDs.cs" />
-    <Compile Include="CoreAudioApi\Constants\ComIIDs.cs" />
-    <Compile Include="CoreAudioApi\Constants\DEVICE_STATE_XXX.cs" />
-    <Compile Include="CoreAudioApi\Constants\ENDPOINT_HARDWARE_SUPPORT_XXX.cs" />
-    <Compile Include="CoreAudioApi\Constants\PropertyKeys.cs" />
-    <Compile Include="CoreAudioApi\Enumerations\AUDCLNT_BUFFERFLAGS.cs" />
-    <Compile Include="CoreAudioApi\Enumerations\AUDCLNT_SHAREMODE.cs" />
-    <Compile Include="CoreAudioApi\Enumerations\AudioSessionDisconnectReason.cs" />
-    <Compile Include="CoreAudioApi\Enumerations\AudioSessionState.cs" />
-    <Compile Include="CoreAudioApi\Enumerations\ConnectorType.cs" />
-    <Compile Include="CoreAudioApi\Enumerations\DataFlow.cs" />
-    <Compile Include="CoreAudioApi\Enumerations\EDataFlow.cs" />
-    <Compile Include="CoreAudioApi\Enumerations\EndpointFormFactor.cs" />
-    <Compile Include="CoreAudioApi\Enumerations\ERole.cs" />
-    <Compile Include="CoreAudioApi\Enumerations\KSJACK_SINK_CONNECTIONTYPE.cs" />
-    <Compile Include="CoreAudioApi\Enumerations\PartType.cs" />
-    <Compile Include="CoreAudioApi\Externals\CLSCTX.cs" />
-    <Compile Include="CoreAudioApi\Externals\IPropertyStore.cs" />
-    <Compile Include="CoreAudioApi\Externals\PROPERTYKEY.cs" />
-    <Compile Include="CoreAudioApi\Externals\PROPVARIANT.cs" />
-    <Compile Include="CoreAudioApi\Externals\STGM.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\Definitions.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioAutoGainControl.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioBass.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioCaptureClient.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioChannelConfig.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioClient.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioClock.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioClock2.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioClockAdjustment.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioEndpointVolume.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioEndpointVolumeCallback.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioEndpointVolumeEx.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioInputSelector.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioLoudness.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioMeterInformation.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioMidrange.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioMute.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioOutputSelector.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioPeakMeter.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioRenderClient.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioSessionControl.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioSessionControl2.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioSessionEnumerator.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioSessionEvents.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioSessionManager.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioSessionManager2.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioSessionNotification.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioStreamVolume.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioTreble.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioVolumeDuckNotification.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IAudioVolumeLevel.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IChannelAudioVolume.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IConnector.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IControlChangeNotify.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IControlInterface.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IDeviceSpecificProperty.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IDeviceTopology.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IKsFormatSupport.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IKsJackDescription.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IKsJackDescription2.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IKsJackSinkInformation.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IMMDevice.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IMMDeviceCollection.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IMMDeviceEnumerator.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IMMEndpoint.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IMMNotificationClient.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IPart.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IPartsList.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\IPerChannelDbLevel.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\ISimpleAudioVolume.cs" />
-    <Compile Include="CoreAudioApi\Interfaces\ISubunit.cs" />
-    <Compile Include="CoreAudioApi\Structures\AUDIO_VOLUME_NOTIFICATION_DATA.cs" />
-    <Compile Include="CoreAudioApi\Structures\DIRECTX_AUDIO_ACTIVATION_PARAMS.cs" />
-    <Compile Include="CoreAudioApi\Structures\KSJACK_DESCRIPTION.cs" />
-    <Compile Include="CoreAudioApi\Structures\KSJACK_DESCRIPTION2.cs" />
-    <Compile Include="CoreAudioApi\Structures\KSJACK_SINK_INFORMATION.cs" />
-    <Compile Include="CoreAudioApi\Structures\LUID.cs" />
-    <Compile Include="Policy\IPolicyConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -198,6 +118,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -224,7 +145,23 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CoreAudio\CoreAudio.csproj">
+      <Project>{0d29014e-bf11-48d9-ba42-d5071f376445}</Project>
+      <Name>CoreAudio</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="FodyWeavers.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\Fody.1.26.1\build\Fody.targets" Condition="Exists('..\packages\Fody.1.26.1\build\Fody.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Fody.1.26.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.26.1\build\Fody.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

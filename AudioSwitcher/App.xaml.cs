@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
@@ -10,12 +11,13 @@ namespace AudioSwitcher
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App
+    public sealed partial class App : IDisposable
     {
         private NotifyIcon icon;
         private ContextMenuStrip contextMenuStrip;
         private readonly AudioDeviceManger deviceEnumerator;
         private const string AppName = "Audio Switcher";
+        private readonly Icon appIcon = AudioSwitcher.Properties.Resources.icon;
 
         public App()
         {
@@ -30,7 +32,7 @@ namespace AudioSwitcher
             icon = new NotifyIcon
             {
                 Visible = true,
-                Icon = AudioSwitcher.Properties.Resources.icon,
+                Icon = appIcon,
                 Text = AppName,
                 ContextMenuStrip = contextMenuStrip
             };
@@ -42,7 +44,7 @@ namespace AudioSwitcher
 
         protected override void OnExit(ExitEventArgs e)
         {
-            icon.Dispose();
+            Dispose();
             base.OnExit(e);
         }
 
@@ -63,8 +65,8 @@ namespace AudioSwitcher
 
         private ToolStripItem[] GetAudioDevices()
         {
-            var devices = deviceEnumerator.GetAudioDevices().ToList();
-            var deviceId = deviceEnumerator.GetDefaultAudioDeviceId();
+            var devices = deviceEnumerator.AudioDevices.ToList();
+            var deviceId = deviceEnumerator.DefaultDeviceId;
 
             var items = new ToolStripItem[devices.Count];
             for (int i = 0; i < devices.Count; i++)
@@ -85,15 +87,15 @@ namespace AudioSwitcher
 
         private void SetDefaultAudioDevice(AudioDevice device)
         {
-            deviceEnumerator.SetDefaultDevice(device.Id);
+            deviceEnumerator.DefaultDeviceId= device.Id;
             ShowToolTip(device.Name);
             SetAudioDeviceMenuItems();
         }
 
         private void IconOnDoubleClick(object sender, EventArgs eventArgs)
         {
-            var devices = deviceEnumerator.GetAudioDevices().ToList();
-            var deviceId = deviceEnumerator.GetDefaultAudioDeviceId();
+            var devices = deviceEnumerator.AudioDevices.ToList();
+            var deviceId = deviceEnumerator.DefaultDeviceId;
 
             var index = 0;
             for (var i = 0; i < devices.Count; i++)
@@ -112,6 +114,13 @@ namespace AudioSwitcher
         private void ShowToolTip(string deviceName)
         {
             icon.ShowBalloonTip(5000, "Audio Device Switched", deviceName, ToolTipIcon.Info);
+        }
+
+        public void Dispose()
+        {
+            icon.Dispose();
+            contextMenuStrip.Dispose();
+            appIcon.Dispose();
         }
     }
 }

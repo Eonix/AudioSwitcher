@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AudioSwitcher.Models;
-using AudioSwitcher.Services.Wrappers;
+using AudioSwitcher.Wrappers;
 
 namespace AudioSwitcher.Services
 {
@@ -16,26 +16,23 @@ namespace AudioSwitcher.Services
             policyConfiguration = new PolicyConfiguration();
         }
 
-        public void SetDefaultDevice(string deviceId)
+        public string DefaultDeviceId
         {
-            policyConfiguration.SetDefaultEndpoint(deviceId);
+            get { return deviceEnumerator.DefaultAudioEndpoint.Id; }
+            set { policyConfiguration.SetDefaultEndpoint(value); }
         }
 
-        public string GetDefaultAudioDeviceId()
+        public IEnumerable<AudioDevice> AudioDevices
         {
-            var defaultAudioEnpoint = deviceEnumerator.GetDefaultAudioEnpoint();
-            return defaultAudioEnpoint.Id;
-        }
-        
-        public IEnumerable<AudioDevice> GetAudioDevices()
-        {
-            var audioEndpoints = deviceEnumerator.EnumAudioEndpoints();
-            return audioEndpoints.Select(audioEndpoint => new AudioDevice
+            get
             {
-                Id = audioEndpoint.Id, 
-                Name = audioEndpoint.Name, 
-                Icon = audioEndpoint.Icon.ToBitmap()
-            });
+                return deviceEnumerator.EnumAudioEndpoints().Select(audioEndpoint => new AudioDevice
+                {
+                    Id = audioEndpoint.Id,
+                    Name = audioEndpoint.Name,
+                    Icon = audioEndpoint.Icon.ToBitmap()
+                }); 
+            }
         }
     }
 }
