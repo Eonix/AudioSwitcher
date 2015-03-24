@@ -6,6 +6,6 @@ namespace AudioSwitcher.Models
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public Image Icon { get; set; }
+        public Icon Icon { get; set; }
     }
 }

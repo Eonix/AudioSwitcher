@@ -1,10 +1,13 @@
 ﻿using System;
-using System.Drawing;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using System.Windows.Forms;
+using System.Windows.Controls;
+using System.Windows.Interop;
+using System.Windows.Media.Imaging;
 using AudioSwitcher.Models;
 using AudioSwitcher.Services;
+using Hardcodet.Wpf.TaskbarNotification;
 
 namespace AudioSwitcher
 {
@@ -13,32 +16,27 @@ namespace AudioSwitcher
     /// </summary>
     public sealed partial class App : IDisposable
     {
-        private NotifyIcon icon;
-        private ContextMenuStrip contextMenuStrip;
         private readonly AudioDeviceManger deviceEnumerator;
         private const string AppName = "Audio Switcher";
-        private readonly Icon appIcon = AudioSwitcher.Properties.Resources.icon;
+        private TaskbarIcon taskbarIcon;
 
         public App()
         {
             deviceEnumerator = new AudioDeviceManger();
         }
-        
+
         protected override void OnStartup(StartupEventArgs e)
         {
-            contextMenuStrip = new ContextMenuStrip();
-            SetAudioDeviceMenuItems();
-
-            icon = new NotifyIcon
+            taskbarIcon = new TaskbarIcon
             {
-                Visible = true,
-                Icon = appIcon,
-                Text = AppName,
-                ContextMenuStrip = contextMenuStrip
+                Icon = AudioSwitcher.Properties.Resources.icon,
+                ToolTipText = AppName,
+                ContextMenu = new ContextMenu()
             };
 
-            icon.DoubleClick += IconOnDoubleClick;
+            taskbarIcon.TrayMouseDoubleClick += IconOnDoubleClick;
 
+            SetAudioDeviceMenuItems();
             base.OnStartup(e);
         }
 
@@ -50,34 +48,41 @@ namespace AudioSwitcher
 
         private void SetAudioDeviceMenuItems()
         {
-            contextMenuStrip.Items.Clear();
+            var contextMenu = taskbarIcon.ContextMenu;
+            contextMenu.Items.Clear();
 
-            var closeMenuItem = new ToolStripMenuItem("Exit");
+            var closeMenuItem = new MenuItem { Header = "Exit" };
             closeMenuItem.Click += (o, args) => Current.Shutdown();
 
-            contextMenuStrip.Items.AddRange(GetAudioDevices());
-            contextMenuStrip.Items.AddRange(new ToolStripItem[]
+            foreach (var device in GetAudioDevices())
             {
-                new ToolStripSeparator(),
-                closeMenuItem,
-            });
+                contextMenu.Items.Add(device);
+            }
+            contextMenu.Items.Add(new Separator());
+            contextMenu.Items.Add(closeMenuItem);
         }
 
-        private ToolStripItem[] GetAudioDevices()
+        private IEnumerable<MenuItem> GetAudioDevices()
         {
             var devices = deviceEnumerator.AudioDevices.ToList();
             var deviceId = deviceEnumerator.DefaultDeviceId;
 
-            var items = new ToolStripItem[devices.Count];
+            var items = new MenuItem[devices.Count];
             for (int i = 0; i < devices.Count; i++)
             {
                 var device = devices[i];
-                var item = new ToolStripMenuItem
+
+                var hbitmap = device.Icon.ToBitmap().GetHbitmap();
+                var bitmapSource = Imaging.CreateBitmapSourceFromHBitmap(hbitmap, IntPtr.Zero, Int32Rect.Empty,
+                    BitmapSizeOptions.FromEmptyOptions());
+
+                var item = new MenuItem
                 {
-                    Checked = device.Id == deviceId,
-                    Text = device.Name,
-                    Image = device.Icon
+                    IsChecked = device.Id == deviceId,
+                    Header = device.Name,
+                    Icon = new Image { Source = bitmapSource }
                 };
+
                 item.Click += (sender, args) => SetDefaultAudioDevice(device);
                 items[i] = item;
             }
@@ -87,7 +92,7 @@ namespace AudioSwitcher
 
         private void SetDefaultAudioDevice(AudioDevice device)
         {
-            deviceEnumerator.DefaultDeviceId= device.Id;
+            deviceEnumerator.DefaultDeviceId = device.Id;
             ShowToolTip(device.Name);
             SetAudioDeviceMenuItems();
         }
@@ -108,19 +113,16 @@ namespace AudioSwitcher
                 index = 0;
 
             SetDefaultAudioDevice(devices[index]);
-            ShowToolTip(devices[index].Name);
         }
 
         private void ShowToolTip(string deviceName)
         {
-            icon.ShowBalloonTip(5000, "Audio Device Switched", deviceName, ToolTipIcon.Info);
+            taskbarIcon.ShowBalloonTip("Audio Device Switched", deviceName, BalloonIcon.Info);
         }
 
         public void Dispose()
         {
-            icon.Dispose();
-            contextMenuStrip.Dispose();
-            appIcon.Dispose();
+            taskbarIcon.Dispose();
         }
     }
 }

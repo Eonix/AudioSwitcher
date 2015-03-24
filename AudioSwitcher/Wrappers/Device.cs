@@ -67,7 +67,7 @@ namespace AudioSwitcher.Wrappers
 
                 var hIconEx = new IntPtr[1];
                 Marshal.ThrowExceptionForHR(NativeMethods.ExtractIconEx(paths[0], int.Parse(paths[1], CultureInfo.InvariantCulture), hIconEx, null, 1));
-                return new Icon(Icon.FromHandle(hIconEx[0]), 16, 16);
+                return Icon.FromHandle(hIconEx[0]);
             }
         }
     }

@@ -30,7 +30,7 @@ namespace AudioSwitcher.Services
                 {
                     Id = audioEndpoint.Id,
                     Name = audioEndpoint.Name,
-                    Icon = audioEndpoint.Icon.ToBitmap()
+                    Icon = audioEndpoint.Icon
                 }); 
             }
         }
