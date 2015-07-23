@@ -59,18 +59,18 @@ namespace CoreAudio.Externals
         /// Represents the data as a unsigned 32-bit integer.
         /// </summary>
         [FieldOffset(0)]
-        public UInt32 AsUInt32;
+        public uint AsUInt32;
 
         /// <summary>
         /// Represents the data as a unicode string pointer.
         /// </summary>
         [FieldOffset(0)]
-        public IntPtr AsStringPtr;
+        public readonly IntPtr AsStringPtr;
 
         /// <summary>
         /// Represents the data as a pointer to a WAVEFORMATEX structure.
         /// </summary>
         [FieldOffset(4)]
-        public IntPtr AsFormatPtr;
+        public readonly IntPtr AsFormatPtr;
     }
 }
