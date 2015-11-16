@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
@@ -51,15 +50,12 @@ namespace AudioSwitcher
             var closeMenuItem = new ToolStripMenuItem { Text = "Exit" };
             closeMenuItem.Click += (o, args) => Current.Shutdown();
 
-            foreach (var device in GetAudioDevices())
-            {
-                contextMenu.Items.Add(device);
-            }
+            contextMenu.Items.AddRange(GetAudioDevices());
             contextMenu.Items.Add(new ToolStripSeparator());
             contextMenu.Items.Add(closeMenuItem);
         }
 
-        private IEnumerable<ToolStripItem> GetAudioDevices()
+        private ToolStripItem[] GetAudioDevices()
         {
             var devices = deviceEnumerator.AudioDevices.ToList();
             var deviceId = deviceEnumerator.DefaultDeviceId;
@@ -93,19 +89,11 @@ namespace AudioSwitcher
         private void IconOnDoubleClick(object sender, EventArgs eventArgs)
         {
             var devices = deviceEnumerator.AudioDevices.ToList();
-            var deviceId = deviceEnumerator.DefaultDeviceId;
-
-            var index = 0;
-            for (var i = 0; i < devices.Count; i++)
-            {
-                if (devices[i].Id == deviceId)
-                    index = i + 1;
-            }
-
-            if (index == devices.Count)
-                index = 0;
-
-            SetDefaultAudioDevice(devices[index]);
+            var currentDefaultDeviceId = deviceEnumerator.DefaultDeviceId;
+            
+            var indexOfCurrentDevice = devices.FindIndex(device => device.Id == currentDefaultDeviceId);
+            var indexOfNextDevice = indexOfCurrentDevice == devices.Count - 1 ? 0 : indexOfCurrentDevice + 1;
+            SetDefaultAudioDevice(devices[indexOfNextDevice]);
         }
 
         private void ShowToolTip(AudioDevice device)
