@@ -68,7 +68,6 @@ namespace AudioSwitcher
                 var item = new MenuItem
                 {
                     Text = device.Name,
-                    //Image = device.Icon.ToBitmap(),
                     Checked = device.Id == deviceId
                 };
 
@@ -82,10 +81,7 @@ namespace AudioSwitcher
         private void SetDefaultAudioDevice(AudioDevice device)
         {
             if (deviceEnumerator.DefaultDeviceId == device.Id)
-            {
-                ShowToolTip(device, "Audio Device remains the same.");
                 return;
-            }
 
             deviceEnumerator.DefaultDeviceId = device.Id;
             ShowToolTip(device, "Audio Device Switched");
@@ -103,8 +99,6 @@ namespace AudioSwitcher
 
             if (nextAudioDevice.Id != currentDefaultDeviceId)
                 SetDefaultAudioDevice(nextAudioDevice);
-            else
-                ShowToolTip(nextAudioDevice, "Audio Device remains the same.");
         }
 
         private void ShowToolTip(AudioDevice device, string message)
