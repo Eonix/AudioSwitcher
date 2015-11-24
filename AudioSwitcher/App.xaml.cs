@@ -23,7 +23,7 @@ namespace AudioSwitcher
             {
                 Icon = AudioSwitcher.Properties.Resources.icon,
                 Text = AppName,
-                ContextMenuStrip = new ContextMenuStrip()
+                ContextMenu = new ContextMenu()
             };
 
             taskbarIcon.DoubleClick += IconOnDoubleClick;
@@ -44,31 +44,30 @@ namespace AudioSwitcher
 
         private void SetAudioDeviceMenuItems()
         {
-            var contextMenu = taskbarIcon.ContextMenuStrip;
-            contextMenu.Items.Clear();
+            var contextMenu = taskbarIcon.ContextMenu;
+            contextMenu.MenuItems.Clear();
 
-            var closeMenuItem = new ToolStripMenuItem { Text = "Exit" };
+            var closeMenuItem = new MenuItem { Text = "Exit" };
             closeMenuItem.Click += (o, args) => Current.Shutdown();
 
-            contextMenu.Items.AddRange(GetAudioDevices());
-            contextMenu.Items.Add(new ToolStripSeparator());
-            contextMenu.Items.Add(closeMenuItem);
+            contextMenu.MenuItems.AddRange(GetAudioDevices());
+            contextMenu.MenuItems.Add("-");
+            contextMenu.MenuItems.Add(closeMenuItem);
         }
 
-        private ToolStripItem[] GetAudioDevices()
+        private MenuItem[] GetAudioDevices()
         {
             var devices = deviceEnumerator.AudioDevices.ToList();
             var deviceId = deviceEnumerator.DefaultDeviceId;
 
-            var items = new ToolStripItem[devices.Count];
+            var items = new MenuItem[devices.Count];
             for (var i = 0; i < devices.Count; i++)
             {
                 var device = devices[i];
 
-                var item = new ToolStripMenuItem
+                var item = new MenuItem
                 {
                     Text = device.Name,
-                    Image = device.Icon.ToBitmap(),
                     Checked = device.Id == deviceId
                 };
 
@@ -81,8 +80,11 @@ namespace AudioSwitcher
 
         private void SetDefaultAudioDevice(AudioDevice device)
         {
+            if (deviceEnumerator.DefaultDeviceId == device.Id)
+                return;
+
             deviceEnumerator.DefaultDeviceId = device.Id;
-            ShowToolTip(device);
+            ShowToolTip(device, "Audio Device Switched");
             SetAudioDeviceMenuItems();
         }
 
@@ -93,12 +95,15 @@ namespace AudioSwitcher
             
             var indexOfCurrentDevice = devices.FindIndex(device => device.Id == currentDefaultDeviceId);
             var indexOfNextDevice = indexOfCurrentDevice == devices.Count - 1 ? 0 : indexOfCurrentDevice + 1;
-            SetDefaultAudioDevice(devices[indexOfNextDevice]);
+            var nextAudioDevice = devices[indexOfNextDevice];
+
+            if (nextAudioDevice.Id != currentDefaultDeviceId)
+                SetDefaultAudioDevice(nextAudioDevice);
         }
 
-        private void ShowToolTip(AudioDevice device)
+        private void ShowToolTip(AudioDevice device, string message)
         {
-            taskbarIcon.BalloonTipTitle = "Audio Device Switched";
+            taskbarIcon.BalloonTipTitle = message;
             taskbarIcon.BalloonTipText = device.Name;
             taskbarIcon.BalloonTipIcon = ToolTipIcon.Info;
             taskbarIcon.ShowBalloonTip(1000);
