@@ -4,7 +4,7 @@ using CoreAudio.Enumerations;
 
 namespace CoreAudio.Policy
 {
-    [Guid("CA286FC3-91FD-42C3-8E9B-CAAFA66242E3"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    [Guid("6be54be8-a068-4875-a49d-0c2966473b11"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface IPolicyConfig
     {
         [PreserveSig]
